@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Aplicativo de Ônibus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #app {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #map {
+            height: 300px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <label for="busStop">Ponto de Ônibus:</label>
+        <input type="text" id="busStop" placeholder="Digite o ponto de ônibus">
+        <label for="direction">Sentido:</label>
+        <select id="direction">
+            <option value="1">Ida</option>
+            <option value="2">Volta</option>
+        </select>
+        <button onclick="getBusInfo()">Obter Informações</button>
+        <div id="map"></div>
+    </div>
+
+    <script>
+        // Substitua 'seu_token' pelo seu token da SPTrans
+        const SPTRANS_API_TOKEN = '739f8ceeed9861cc6a2a4000347908c7ffaec52d6461b2f37cc62c07f52b85bc';
+
+        function getBusInfo() {
+            const busStop = document.getElementById('busStop').value;
+            const direction = document.getElementById('direction').value;
+
+            // Autenticação na API da SPTrans
+            fetch(`https://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token=${SPTRANS_API_TOKEN}`)
+                .then(response => response.json())
+                .then(data => {
+                    const authToken = data.token;
+
+                    // Lógica para obter informações do ônibus
+                    fetch(`https://api.olhovivo.sptrans.com.br/v2.1/Posicao?codigoLinha=${busStop}&sentido=${direction}&token=${authToken}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Exemplo: Mostrar dados no console
+                            console.log('Informações do ônibus:', data);
+
+                            // Implemente a lógica para exibir no mapa e notificar quando estiver a 3 pontos
+                            // Use uma biblioteca de mapas (por exemplo, Leaflet ou Google Maps)
+                        })
+                        .catch(error => console.error('Erro ao obter informações do ônibus:', error));
+                })
+                .catch(error => console.error('Erro na autenticação:', error));
+        }
+    </script>
+</body>
+</html>
